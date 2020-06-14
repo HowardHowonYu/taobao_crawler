@@ -100,7 +100,7 @@ class ProductCrawler():
         finally:
             try:
                 result['og_price'] = driver.find_element_by_xpath(
-                    '//*[@id="J_StrPrice"]').text
+                    '//*[@id="J_StrPrice"]/em[@class="tb-rmb-num"]').text
                 result['promo_price'] = driver.find_element_by_xpath(
                     '//*[@id="J_PromoPriceNum"]').text
             except:
@@ -152,5 +152,5 @@ class ProductCrawler():
 
 if __name__ == "__main__":
     crawler = ProductCrawler()
-    print(crawler.product_crawler(sys.argv[1]))
+    print(crawler.taobao_crawler(sys.argv[1], sys.argv[2], sys.argv[3]))
     

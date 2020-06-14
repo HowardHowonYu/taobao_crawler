@@ -1,5 +1,17 @@
 # Taabao carwler
 
+## How to Use
+
+```shell
+$ python taobao_crawler.py item_id user_id, user_pw
+```
+
+```python
+from taobao_crwler import ProductCrawler
+crawler = ProductCrawler()
+crawler.taobao_crawler(item_id user_id, user_pw)
+```
+
 ## Goals
 - 할인된 상품가격, 상품명, 옵션, 옵션이미지를 반환 하는 API 제작.
 
