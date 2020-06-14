@@ -1,6 +1,27 @@
+import time
 import sys
 
 class ProductCrawler():
+
+    def __get_proxy__(self):
+        from selenium import webdriver
+
+        co = webdriver.ChromeOptions()
+        co.add_argument("log-level=3")
+        co.add_argument("--headless")
+        driver = webdriver.Chrome('./chromedriver', chrome_options=co)
+        driver.get("https://free-proxy-list.net/")
+
+        PROXIES = []
+        proxies = driver.find_elements_by_css_selector("tr[role='row']")
+        for p in proxies:
+            result = p.text.split(" ")
+
+            if result[-1] == "yes":
+                PROXIES.append(result[0]+":"+result[1])
+
+        driver.close()
+        return PROXIES
 
     def product_crawler(self, itemid):
         """        
@@ -16,22 +37,24 @@ class ProductCrawler():
         # make userAgent randomly
         ua = UserAgent(verify_ssl=False)
         userAgent = ua.random
-        options = webdriver.ChromeOptions()
-        options.add_argument(userAgent)
-        
-        driver = webdriver.Chrome('./chromedriver', options=options)
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument(userAgent)
+
+        driver = webdriver.Chrome('./chromedriver', options=chrome_options)
 
         driver.get("https://item.taobao.com/item.htm?id={}".format(itemid))
 
         # control alert window 
         try:
             alert = driver.switch_to_alert()
+            time.sleep(1)
             alert.accept()
             current_url = driver.current_url
         except:
             current_url = driver.current_url
 
-        print("사이트 체크 완료")
+        print("사이트 체크 완료", current_url)
+
         driver.quit()
 
         
@@ -59,7 +82,7 @@ class ProductCrawler():
         # for cookie in cookies:
         #     driver.add_cookie(cookie)
 
-        driver = self.set_cookies()
+        driver = self.set_cookies_proxies()
 
         driver.get("https://item.taobao.com/item.htm?id={}".format(itemid))
 
@@ -79,7 +102,6 @@ class ProductCrawler():
             result['promo_price_kuang'] = driver.find_element_by_xpath('// *[@id="J_DetailMeta"]/div[1]/div[1]/div/div[2]/dl[3]/dd/span').text
         except:
             result['promo_price_kuang'] = "가격 정보 없음"
-
 
         driver.quit()
 
@@ -133,17 +155,18 @@ class ProductCrawler():
         # cookies = pickle.load(f)
         # for cookie in cookies:
         #     driver.add_cookie(cookie)
-        # driver.get("https://item.taobao.com/item.htm?id={}".format(itemid))
+        
+        driver = self.set_cookies_proxies()
 
-        driver = self.set_cookies()
+        driver.get("https://item.taobao.com/item.htm?id={}".format(itemid))
 
         result = {}
         result['item_id'] = itemid
 
         # 할인 가격
         try:
-            result['promo_price'] = driver.find_element_by_css_selector(
-                '#J_PromoPriceNum').text
+            result['promo_price'] = driver.find_element_by_xpath(
+                '//*[@id="J_PromoPriceNum"]').text
         except:
             result['promo_price'] = '할인 가격 없음'
 
@@ -160,7 +183,7 @@ class ProductCrawler():
         url = "https://item.taobao.com/item.htm?id={}".format(itemid)
 
         # https://stackoverflow.com/questions/32910093/python-requests-gets-tlsv1-alert-internal-err
-        # requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS = 'DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+HIGH:DH+HIGH:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+HIGH:RSA+3DES:!aNULL:!eNULL:!MD5'
+        requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS = 'DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+HIGH:DH+HIGH:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+HIGH:RSA+3DES:!aNULL:!eNULL:!MD5'
 
         response = requests.get(url=url, headers=headers)
         req = TextResponse(response.url, body=response.text, encoding="utf-8")
@@ -183,13 +206,22 @@ class ProductCrawler():
 
         return result
 
-    def set_cookies(self):
+
+    def set_cookies_proxies(self):
         from selenium import webdriver
         import pickle
 
-        driver = webdriver.Chrome('./chromedriver')
-        driver.get("https://www.taobao.com")
+        # get proxies
+        PROXIES = self.__get_proxy__()
 
+        # # set proxies
+        # chrome_options = webdriver.ChromeOptions()
+        # chrome_options.add_argument('--proxy-server=' + PROXIES[0])
+        driver = webdriver.Chrome(
+            './chromedriver')
+        driver.get("https://www.taobao.com")
+        
+        # set cookies
         # load cookies to get information about 'Promotion Price'
         # have to find better approach
         f = open('cookie_taobao.dat', 'rb')
@@ -198,5 +230,8 @@ class ProductCrawler():
             driver.add_cookie(cookie)
 
         return driver
-        # if __name__ == "__main__":
-        #     crawler(sys.argv[1])
+
+
+# if __name__ == "__main__":
+#     product_crawler(sys.argv[1])
+    
