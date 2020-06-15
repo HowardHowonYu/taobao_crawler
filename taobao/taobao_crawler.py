@@ -145,7 +145,6 @@ class ProductCrawler():
                 'User-Agent': userAgent
             }
 
-            # url = "https://item.taobao.com/item.htm?id={}".format(itemid)
 
             # https://stackoverflow.com/questions/32910093/python-requests-gets-tlsv1-alert-internal-err
             requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS = 'DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+HIGH:DH+HIGH:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+HIGH:RSA+3DES:!aNULL:!eNULL:!MD5'
