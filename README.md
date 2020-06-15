@@ -10,15 +10,19 @@
 ## How to Use
 
 ```shell
-# itemid 하나 입력
 $ python taobao_crawler.py item_id user_id, user_pw
+# itemid 하나 입력
+# 529586077819
 ```
+
+
 
 ```python
 from taobao_crwler import ProductCrawler
 crawler = ProductCrawler()
 crawler.taobao_crawler([item_ids], "user_id", "user_pw")
 # itemid를 list로 입력
+# [529586077819, 44226087175, 521681811578, 536004719035]
 ```
 
 ## Goals
