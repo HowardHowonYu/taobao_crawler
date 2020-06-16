@@ -12,6 +12,7 @@ class ProductCrawler():
     def __mall_login__(self, itemids, user_id, user_pw):
         from selenium import webdriver
 
+        # get proxies from  "https://free-proxy-list.net/"
         co = webdriver.ChromeOptions()
         co.add_argument("log-level=3")
         co.add_argument("--headless")
@@ -28,6 +29,7 @@ class ProductCrawler():
 
         print('프록시 가져옴')
         driver.close()
+
         # set proxies to driver
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument(PROXIES[random.randint(0, len(PROXIES)-1)])
@@ -44,7 +46,7 @@ class ProductCrawler():
         except:
             time.sleep(1)
 
-        # log_in, taobao or tamll
+        # log_in
         try:
             driver.switch_to.frame("sufei-dialog-content")
 
@@ -52,6 +54,7 @@ class ProductCrawler():
             driver.switch_to.frame('baxia-dialog-content')
 
 
+        # input id & pw
         id_box = driver.find_element_by_id('fm-login-id')
         pw_box = driver.find_element_by_id('fm-login-password')
 
@@ -92,6 +95,7 @@ class ProductCrawler():
         driver = self.__mall_login__(
             itemids, user_id, user_pw)
 
+        # get & set cookies
         cookies = driver.get_cookies()
 
         for cookie in cookies:
