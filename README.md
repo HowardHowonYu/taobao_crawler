@@ -1,5 +1,10 @@
 # Taabao carwler
 
+## Goals
+- 할인된 상품가격, 상품명, 옵션, 옵션이미지를 반환 하는 API 제작.
+
+## Technical Skills
+- Python, Selenium, Scrapy(TextResponse)
 
 ## Requirements
 - scrapy 1.8.0
@@ -15,8 +20,6 @@ $ python taobao_crawler.py item_id user_id, user_pw
 # 529586077819
 ```
 
-
-
 ```python
 from taobao_crwler import ProductCrawler
 crawler = ProductCrawler()
@@ -25,11 +28,6 @@ crawler.taobao_crawler([item_ids], "user_id", "user_pw")
 # [529586077819, 44226087175, 521681811578, 536004719035]
 ```
 
-## Goals
-- 할인된 상품가격, 상품명, 옵션, 옵션이미지를 반환 하는 API 제작.
-
-## Technical Skills
-- Python, Selenium, Scrapy(TextResponse)
 
 ## Issue
 - 할인된 상품가격은 requests로 가져오지 못함 : 쿠키를 활용 & 로그인 정보 입력
