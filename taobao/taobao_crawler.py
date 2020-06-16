@@ -9,7 +9,7 @@ import sys
 
 class ProductCrawler():
  
-    def __mall_login__(self, itemid, user_id, user_pw, mall_name):
+    def __mall_login__(self, itemids, user_id, user_pw):
         from selenium import webdriver
 
         co = webdriver.ChromeOptions()
@@ -35,7 +35,7 @@ class ProductCrawler():
             './chromedriver', options=chrome_options)
 
         # login
-        driver.get("https://item.taobao.com/item.htm?id={}".format(itemid))
+        driver.get("https://item.taobao.com/item.htm?id={}".format(itemids[0]))
 
         # control alert window
         try:
@@ -46,10 +46,11 @@ class ProductCrawler():
 
         # log_in, taobao or tamll
         try:
-            driver.switch_to_frame("sufei-dialog-content")
+            driver.switch_to.frame("sufei-dialog-content")
 
         except:
-            driver.switch_to_frame('baxia-dialog-content')
+            driver.switch_to.frame('baxia-dialog-content')
+
 
         id_box = driver.find_element_by_id('fm-login-id')
         pw_box = driver.find_element_by_id('fm-login-password')
@@ -66,13 +67,6 @@ class ProductCrawler():
             )
 
         finally:
-            if mall_name == "taobao":
-                webdriver.ActionChains(driver).click_and_hold(
-                    swipe_btn).move_to_element_with_offset(swipe_btn, 400, 10).release().perform()
-                time.sleep(1)
-
-            else:
-                print('tmall')
                 webdriver.ActionChains(driver).click_and_hold(
                     swipe_btn).move_to_element_with_offset(swipe_btn, 300, 0).move_to_element_with_offset(swipe_btn, 300, 0).perform()
                 time.sleep(1)
@@ -95,11 +89,8 @@ class ProductCrawler():
 
         import requests
 
-        if type(itemids) != "list":
-            itemids = [itemids]
-
         driver = self.__mall_login__(
-            itemids[0], user_id, user_pw, "taobao")
+            itemids, user_id, user_pw)
 
         cookies = driver.get_cookies()
 
@@ -176,7 +167,7 @@ class ProductCrawler():
         return result_ls
 
 
-if __name__ == "__main__":
-    crawler = ProductCrawler()
-    print(crawler.taobao_crawler(sys.argv[1], sys.argv[2], sys.argv[3]))
+# if __name__ == "__main__":
+#     crawler = ProductCrawler()
+#     print(crawler.taobao_crawler(sys.argv[1], sys.argv[2], sys.argv[3]))
     

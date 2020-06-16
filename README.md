@@ -14,12 +14,6 @@
 
 ## How to Use
 
-```shell
-$ python taobao_crawler.py item_id user_id, user_pw
-# itemid 하나 입력
-# 529586077819
-```
-
 ```python
 from taobao_crwler import ProductCrawler
 crawler = ProductCrawler()
